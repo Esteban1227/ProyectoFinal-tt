@@ -3,12 +3,12 @@ import tkinter
 def main():
     options = {
             "planesAvailable":[
-                [
-                    "Nombre del avion",
-                    "Estado de disponibilidad",
-                    "Ultimo mantenimiento",
-                    "precio de alquiler"
-                ]
+                # [
+                #     "Nombre del avion",
+                #     "Estado de disponibilidad",
+                #     "Ultimo mantenimiento",
+                #     "precio de alquiler"
+                # ]
             ],
             "planesBusy":[
                 [
@@ -46,14 +46,11 @@ def main():
     btonUser.pack()
     root.mainloop()
 
-""" def counter(add):
-    if(add):
-        message =+ 1
-    else:
-        message = 0
-    return message """
+def counter(label, optionsFpecific):
+    print(optionsFpecific)
+    label["text"] = "Aviones disponibles("+str(len(optionsFpecific))+")"
 
-def add(root, rootClose, optionsFpecific, entryName, entrySate, entryMaintenance, entryPrice):
+def add(root, rootClose, optionsFpecific, entryName, entrySate, entryMaintenance, entryPrice, labelCounter):
     close(rootClose)
     optionsFpecific.append([entryName, entrySate, entryMaintenance, entryPrice])
     frame = Frame(root)
@@ -62,7 +59,7 @@ def add(root, rootClose, optionsFpecific, entryName, entrySate, entryMaintenance
     labaelName.pack()
     btnMore.pack()
     frame.pack()
-    print(optionsFpecific)
+    counter(labelCounter, optionsFpecific)
 
 
 def menuAdmin(options, rootClose):
@@ -70,15 +67,16 @@ def menuAdmin(options, rootClose):
     rootAdmin = Tk()
     tittle = Label(rootAdmin, text="JETT")
     planesAvailableFrame = Frame(rootAdmin)
-    subTittle = Label(planesAvailableFrame, text="Aviones Disponibles")
-    btnAdd = Button(planesAvailableFrame, text="Agregar un nuevo avion", command= lambda: menuCreate(planesAvailableFrame, options["planesAvailable"]))
+    subTittle = Label(planesAvailableFrame, text="Aviones disponibles(0)")
+    subTittle["text"] = counter(subTittle, options["planesAvailable"])
+    btnAdd = Button(planesAvailableFrame, text="Agregar un nuevo avion", command= lambda: menuAddPlane(planesAvailableFrame, options["planesAvailable"], subTittle))
     tittle.pack()
     planesAvailableFrame.pack()
     subTittle.pack()
     btnAdd.pack()
     rootAdmin.mainloop()
 
-def menuCreate(root, optionsFpecific):
+def menuAddPlane(root, optionsFpecific, labelCounter):
     rootCreate = Tk()
     tittle = Label(rootCreate, text="JETT")
     labelEntryName = Label(rootCreate, text="Nombre")
@@ -89,7 +87,7 @@ def menuCreate(root, optionsFpecific):
     entryMaintenance = Entry(rootCreate)
     labelEntryPrice = Label(rootCreate, text="Precio")
     entryPrice = Entry(rootCreate)
-    btnAccept = Button(rootCreate, text="Aceptar", command= lambda: add(root, rootCreate, optionsFpecific, entryName.get(), entryState.get(), entryMaintenance.get(), entryPrice.get()))
+    btnAccept = Button(rootCreate, text="Aceptar", command= lambda: add(root, rootCreate, optionsFpecific, entryName.get(), entryState.get(), entryMaintenance.get(), entryPrice.get(), labelCounter))
     tittle.pack()
     labelEntryName.pack()
     entryName.pack()
