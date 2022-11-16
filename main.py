@@ -1,5 +1,4 @@
 from tkinter import *
-import tkinter
 def main():
     options = {
             "planesAvailable":[
@@ -19,12 +18,12 @@ def main():
                 ]
             ],
             "hangarsAvailable":[
-                [
-                    "Numero del hangar",
-                    "Estado de disponibilidad",
-                    "precio de alquiler",
-                    "medidas"
-                ]
+                # [
+                #     "Numero del hangar",
+                #     "Estado de disponibilidad",
+                #     "precio de alquiler",
+                #     "medidas"
+                # ]
             ],
             "hangarsBusy":[
                 [
@@ -46,34 +45,41 @@ def main():
     btonUser.pack()
     root.mainloop()
 
-def counter(label, optionsFpecific):
-    print(optionsFpecific)
-    label["text"] = "Aviones disponibles("+str(len(optionsFpecific))+")"
+def counter(label, optionsSpecify, isPlanes):
+    if(isPlanes):
+        label["text"] = "Aviones disponibles("+str(len(optionsSpecify))+")"
+    else: 
+        label["text"] = "Hangares disponibles("+str(len(optionsSpecify))+")"
 
-def add(root, rootClose, optionsFpecific, entryName, entrySate, entryMaintenance, entryPrice, labelCounter):
+def add(root, rootClose, optionsSpecify, entryName, entrySate, entryMaintenance, entryPrice, labelCounter, isPlanes):
     close(rootClose)
-    optionsFpecific.append([entryName, entrySate, entryMaintenance, entryPrice])
+    optionsSpecify.append([entryName, entrySate, entryMaintenance, entryPrice])
     frame = Frame(root)
     labaelName = Label(frame, text=entryName)
     btnMore = Button(frame, text="Ver mas")
     labaelName.pack()
     btnMore.pack()
     frame.pack()
-    counter(labelCounter, optionsFpecific)
+    counter(labelCounter, optionsSpecify, isPlanes)
 
 
 def menuAdmin(options, rootClose):
     close(rootClose)
     rootAdmin = Tk()
     tittle = Label(rootAdmin, text="JETT")
-    planesAvailableFrame = Frame(rootAdmin)
+    planesAvailableFrame = Frame(rootAdmin, bg="blue", padx=5, pady=5)
+    hangarsAvailableFrame = Frame(rootAdmin, bg="red", padx=5, pady=5)
     subTittle = Label(planesAvailableFrame, text="Aviones disponibles(0)")
-    subTittle["text"] = counter(subTittle, options["planesAvailable"])
-    btnAdd = Button(planesAvailableFrame, text="Agregar un nuevo avion", command= lambda: menuAddPlane(planesAvailableFrame, options["planesAvailable"], subTittle))
+    btnAddPlane = Button(planesAvailableFrame, text="Agregar un nuevo avion", command= lambda: menuAddPlane(planesAvailableFrame, options["planesAvailable"], subTittle))
+    subTittle2 = Label(hangarsAvailableFrame, text="Hangares disponibles(0)")
+    btnAddHangar = Button(hangarsAvailableFrame, text="Agregar un nuevo Hangar", command= lambda: menuAddHangar(hangarsAvailableFrame, options["hangarsAvailable"], subTittle2))
     tittle.pack()
     planesAvailableFrame.pack()
+    hangarsAvailableFrame.pack()
     subTittle.pack()
-    btnAdd.pack()
+    btnAddPlane.pack()
+    subTittle2.pack()
+    btnAddHangar.pack()
     rootAdmin.mainloop()
 
 def menuAddPlane(root, optionsFpecific, labelCounter):
@@ -87,7 +93,30 @@ def menuAddPlane(root, optionsFpecific, labelCounter):
     entryMaintenance = Entry(rootCreate)
     labelEntryPrice = Label(rootCreate, text="Precio")
     entryPrice = Entry(rootCreate)
-    btnAccept = Button(rootCreate, text="Aceptar", command= lambda: add(root, rootCreate, optionsFpecific, entryName.get(), entryState.get(), entryMaintenance.get(), entryPrice.get(), labelCounter))
+    btnAccept = Button(rootCreate, text="Aceptar", command= lambda: add(root, rootCreate, optionsFpecific, entryName.get(), entryState.get(), entryMaintenance.get(), entryPrice.get(), labelCounter, True))
+    tittle.pack()
+    labelEntryName.pack()
+    entryName.pack()
+    labelEntryState.pack()
+    entryState.pack()
+    labelEntryMaintenance.pack()
+    entryMaintenance.pack()
+    labelEntryPrice.pack()
+    entryPrice.pack()
+    btnAccept.pack()
+
+def menuAddHangar(root, optionsFpecific, labelCounter):
+    rootCreate = Tk()
+    tittle = Label(rootCreate, text="JETT")
+    labelEntryName = Label(rootCreate, text="Numero de hangar")
+    entryName = Entry(rootCreate)
+    labelEntryState = Label(rootCreate, text="Estado de disponibilidad")
+    entryState = Entry(rootCreate)
+    labelEntryMaintenance = Label(rootCreate, text="medidas")
+    entryMaintenance = Entry(rootCreate)
+    labelEntryPrice = Label(rootCreate, text="Precio")
+    entryPrice = Entry(rootCreate)
+    btnAccept = Button(rootCreate, text="Aceptar", command= lambda: add(root, rootCreate, optionsFpecific, entryName.get(), entryState.get(), entryMaintenance.get(), entryPrice.get(), labelCounter, False))
     tittle.pack()
     labelEntryName.pack()
     entryName.pack()
