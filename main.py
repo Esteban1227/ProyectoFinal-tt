@@ -1,154 +1,281 @@
 from tkinter import *
-def main():
-    options = {
+from datetime import date
+import random
+
+def randomNumber():
+    numero = int(random.random() * 1000000000)
+    return '{:,.2f}'.format(numero)
+options = {
             "planesAvailable":[
-                # [
-                #     "Nombre del avion",
-                #     "Estado de disponibilidad",
-                #     "Ultimo mantenimiento",
-                #     "precio de alquiler"
-                # ]
+                [
+                    "La reina de los cielos",
+                    True,
+                    date.today(),
+                    randomNumber()
+                ],
+                [
+                    "Chancho",
+                    True,
+                    date.today(),
+                    randomNumber()
+                ],
+                [
+                    "Mapache",
+                    True,
+                    date.today(),
+                    randomNumber()
+                ],
+                [
+                    "Buff",
+                    True,
+                    date.today(),
+                    randomNumber()
+                ],
+                [
+                    "Ballena",
+                    True,
+                    date.today(),
+                    randomNumber()
+                ]
             ],
             "planesBusy":[
-                [
-                    "Nombre del avion",
-                    "Estado de disponibilidad",
-                    "Ultimo mantenimiento",
-                    "precio de alquiler"
-                ]
             ],
             "hangarsAvailable":[
-                # [
-                #     "Numero del hangar",
-                #     "Estado de disponibilidad",
-                #     "precio de alquiler",
-                #     "medidas"
-                # ]
+                [
+                    "Hangar-1",
+                    True,
+                    "500x500",
+                    randomNumber()
+                ],
+                [
+                    "Hangar-2",
+                    True,
+                    "500x500",
+                    randomNumber()
+                ],
+                [
+                    "Hangar-3",
+                    True,
+                    "500x500",
+                    randomNumber()
+                ],
+                [
+                    "Hangar-4",
+                    True,
+                    "500x500",
+                    randomNumber()
+                ],
+                [
+                    "Hangar-5",
+                    True,
+                    "500x500",
+                    randomNumber()
+                ],
             ],
             "hangarsBusy":[
-                [
-                    "Numero del hangar",
-                    "Estado de disponibilidad",
-                    "precio de alquiler",
-                    "medidas"
-                ]
             ]
         }
+
+def main():
     root = Tk()
     tittle = Label(root, text="JETT")
     cuestion = Label(root, text="¿Como desea ingresar")
-    btonAdmin = Button(root, text="Administrador", command= lambda: menuAdmin(options, root))
-    btonUser = Button(root, text="Usuario", command= lambda: menuUser(options, root))
+    btonAdmin = Button(root, text="Administrador", command= lambda: menuAdmin())
+    btonUser = Button(root, text="Usuario", command= lambda: menuUser())
     tittle.pack()
     cuestion.pack()
     btonAdmin.pack()
     btonUser.pack()
     root.mainloop()
 
-def counter(label, optionsSpecify, isPlanes):
-    if(isPlanes):
-        label["text"] = "Aviones disponibles("+str(len(optionsSpecify))+")"
-    else: 
-        label["text"] = "Hangares disponibles("+str(len(optionsSpecify))+")"
-
-def add(root, rootClose, optionsSpecify, entryName, entrySate, entryMaintenance, entryPrice, labelCounter, isPlanes):
-    close(rootClose)
-    optionsSpecify.append([entryName, entrySate, entryMaintenance, entryPrice])
-    frame = Frame(root)
-    labaelName = Label(frame, text=entryName)
-    btnMore = Button(frame, text="Ver mas")
-    labaelName.pack()
-    btnMore.pack()
-    frame.pack()
-    counter(labelCounter, optionsSpecify, isPlanes)
-
-
-def menuAdmin(options, rootClose):
-    close(rootClose)
+def menuAdmin():
     rootAdmin = Tk()
     tittle = Label(rootAdmin, text="JETT")
-    planesAvailableFrame = Frame(rootAdmin, bg="blue", padx=5, pady=5)
-    hangarsAvailableFrame = Frame(rootAdmin, bg="red", padx=5, pady=5)
-    subTittle = Label(planesAvailableFrame, text="Aviones disponibles(0)")
-    btnAddPlane = Button(planesAvailableFrame, text="Agregar un nuevo avion", command= lambda: menuAddPlane(planesAvailableFrame, options["planesAvailable"], subTittle))
-    subTittle2 = Label(hangarsAvailableFrame, text="Hangares disponibles(0)")
-    btnAddHangar = Button(hangarsAvailableFrame, text="Agregar un nuevo Hangar", command= lambda: menuAddHangar(hangarsAvailableFrame, options["hangarsAvailable"], subTittle2))
     tittle.pack()
+
+    searchPlanesFrame = Frame(rootAdmin)
+    searchPlanesLabel = Label(searchPlanesFrame, text="Escriba el nombre del avion que quiere editar")
+    searchPlanesLabel.pack()
+    searchPlanesEntry = Entry(searchPlanesFrame)
+    searchPlanesEntry.pack()
+    searchPlanesButton = Button(searchPlanesFrame, text="Buscar", command=lambda: searchPlane(options["planesAvailable"], searchPlanesEntry.get(), searchPlanesFrame, rootAdmin))
+    searchPlanesButton.pack()
+    searchPlanesFrame.pack()
+
+    planesAvailableFrame = Frame(rootAdmin, bg="#D1DDFF", padx=5, pady=5)
     planesAvailableFrame.pack()
+    labelCounterPlanes = Label(planesAvailableFrame, text=f"Aviones disponibles({len(options['planesAvailable'])})")
+    showItems(options["planesAvailable"], planesAvailableFrame)
+    btnSeeMorePlanes = Button(planesAvailableFrame, text="Mas Informacion", command= lambda: menuSeeMore(options["planesAvailable"]))
+    labelCounterPlanes.pack()
+    btnSeeMorePlanes.pack()
+
+    planesBusyFrame = Frame(rootAdmin, bg="#D1DDFF", padx=5, pady=5)
+    planesBusyFrame.pack()
+    labelCounterPlanesBuy = Label(planesBusyFrame, text=f"Aviones Ocupados({len(options['planesBusy'])})")
+    showItems(options["planesBusy"], planesBusyFrame)
+    btnSeeMorePlanesBuy = Button(planesBusyFrame, text="Mas Informacion", command= lambda: menuSeeMore(options["planesBusy"]))
+    labelCounterPlanesBuy.pack()
+    btnSeeMorePlanesBuy.pack()
+
+    searchHangarFrame = Frame(rootAdmin)
+    searchHangarFrame.pack()
+    searchHangarLabel = Label(searchHangarFrame, text="Escriba el nombre del hangar que quiere editar")
+    searchHangarLabel.pack()
+    searchHangarEntry = Entry(searchHangarFrame)
+    searchHangarEntry.pack()
+    searchHangarButton = Button(searchHangarFrame, text="Buscar", command=lambda: searchHangar(options["hangarsAvailable"], searchHangarEntry.get(), searchHangarFrame, rootAdmin))
+    searchHangarButton.pack()
+
+    hangarsAvailableFrame = Frame(rootAdmin, bg="#D1DDFF", padx=5, pady=5)
     hangarsAvailableFrame.pack()
-    subTittle.pack()
-    btnAddPlane.pack()
-    subTittle2.pack()
-    btnAddHangar.pack()
+    labelCounterHangars = Label(hangarsAvailableFrame, text=f"Hangares disponibles({len(options['hangarsAvailable'])})")
+    showItems(options["hangarsAvailable"], hangarsAvailableFrame)
+    btnSeeMoreHangars = Button(hangarsAvailableFrame, text="Mas Informacion", command= lambda: menuSeeMore(options["hangarsAvailable"]))
+    labelCounterHangars.pack()
+    btnSeeMoreHangars.pack()
+
+    hangarsBusyFrame = Frame(rootAdmin, bg="#D1DDFF", padx=5, pady=5)
+    hangarsBusyFrame.pack()
+    labelCounterHangarsBusy = Label(hangarsBusyFrame, text=f"Hangares disponibles({len(options['hangarsBusy'])})")
+    showItems(options["hangarsBusy"], hangarsBusyFrame)
+    btnSeeMoreHangarsBusy = Button(hangarsBusyFrame, text="Mas Informacion", command= lambda: menuSeeMore(options["hangarsBusy"]))
+    labelCounterHangarsBusy.pack()
+    btnSeeMoreHangarsBusy.pack()
+    
     rootAdmin.mainloop()
 
-def menuAddPlane(root, optionsFpecific, labelCounter):
-    rootCreate = Tk()
-    tittle = Label(rootCreate, text="JETT")
-    labelEntryName = Label(rootCreate, text="Nombre")
-    entryName = Entry(rootCreate)
-    labelEntryState = Label(rootCreate, text="Estado de disponibilidad")
-    entryState = Entry(rootCreate)
-    labelEntryMaintenance = Label(rootCreate, text="Ultimo Mantenimiento")
-    entryMaintenance = Entry(rootCreate)
-    labelEntryPrice = Label(rootCreate, text="Precio")
-    entryPrice = Entry(rootCreate)
-    btnAccept = Button(rootCreate, text="Aceptar", command= lambda: add(root, rootCreate, optionsFpecific, entryName.get(), entryState.get(), entryMaintenance.get(), entryPrice.get(), labelCounter, True))
-    tittle.pack()
-    labelEntryName.pack()
-    entryName.pack()
-    labelEntryState.pack()
-    entryState.pack()
-    labelEntryMaintenance.pack()
-    entryMaintenance.pack()
-    labelEntryPrice.pack()
-    entryPrice.pack()
-    btnAccept.pack()
+def searchPlane(optionsSpecify, searchedName, frame, rootClose):
+    for i in optionsSpecify:
+        if(searchedName.lower() == i[0].lower()):
+            name = i[0]
+            nameLabel = Label(frame, text=f"Nombre: {name}")
+            nameLabel.pack()
+            stateLabel = Label(frame)
+            if(i[1]):
+                stateLabel["text"] = "Estado: Activo"
+            else:
+                stateLabel["text"] = "Estado: Ocupado"
+            stateLabel.pack()
+            dateLabel = Label(frame, text=f"Tamaño: {i[2]}")
+            dateLabel.pack()
+            priceLabel = Label(frame, text=f"Precio: ${i[3]}")
+            priceLabel.pack()
+            btnEdit = Button(frame, text="Editar elemento", command=lambda: menuEdit(rootClose, optionsSpecify, name))
+            btnEdit.pack()
+            btnDelete = Button(frame, text="Elimar elemento", command=lambda: deleteElement(optionsSpecify, name, rootClose))
+            btnDelete.pack()
+            btnChangeState = Button(frame, text="Cambiar el estado", command=lambda: changeState(optionsSpecify, name, rootClose, options["planesBusy"]))
+            btnChangeState.pack()
 
-def menuAddHangar(root, optionsFpecific, labelCounter):
-    rootCreate = Tk()
-    tittle = Label(rootCreate, text="JETT")
-    labelEntryName = Label(rootCreate, text="Numero de hangar")
-    entryName = Entry(rootCreate)
-    labelEntryState = Label(rootCreate, text="Estado de disponibilidad")
-    entryState = Entry(rootCreate)
-    labelEntryMaintenance = Label(rootCreate, text="medidas")
-    entryMaintenance = Entry(rootCreate)
-    labelEntryPrice = Label(rootCreate, text="Precio")
-    entryPrice = Entry(rootCreate)
-    btnAccept = Button(rootCreate, text="Aceptar", command= lambda: add(root, rootCreate, optionsFpecific, entryName.get(), entryState.get(), entryMaintenance.get(), entryPrice.get(), labelCounter, False))
-    tittle.pack()
-    labelEntryName.pack()
-    entryName.pack()
-    labelEntryState.pack()
-    entryState.pack()
-    labelEntryMaintenance.pack()
-    entryMaintenance.pack()
-    labelEntryPrice.pack()
-    entryPrice.pack()
-    btnAccept.pack()
+def searchHangar(optionsSpecify, searchedName, frame, rootClose):
+    for i in optionsSpecify:
+        if(searchedName.lower() == i[0].lower()):
+            name = i[0]
+            nameLabel = Label(frame, text=f"Nombre: {name}")
+            nameLabel.pack()
+            stateLabel = Label(frame)
+            if(i[1]):
+                stateLabel["text"] = "Estado: Activo"
+            else:
+                stateLabel["text"] = "Estado: Ocupado"
+            dateLabel = Label(frame, text=f"Fecha del ultimo mantenimineto: {i[2]}")
+            dateLabel.pack()
+            priceLabel = Label(frame, text=f"Precio: ${i[3]}")
+            priceLabel.pack()
+            btnEdit = Button(frame, text="Editar elemento", command=lambda: menuEdit(rootClose, optionsSpecify, name))
+            btnEdit.pack()
+            btnDelete = Button(frame, text="Elimar elemento", command=lambda: deleteElement(optionsSpecify, name, rootClose))
+            btnDelete.pack()
+            btnChangeState = Button(frame, text="Cambiar el estado", command=lambda: changeState(optionsSpecify, name, rootClose, options["hangarsBusy"]))
+            btnChangeState.pack()
 
+def menuEdit(rootClose, optionsSpecify, itemToEdit):
+    close(rootClose)
+    for i in optionsSpecify:
+        if(i[0] == itemToEdit):
+            rootEdit = Tk()
+            tittle = Label(rootEdit, text="JETT")
+            name = i[0]
+            labelEntryLastName = Label(rootEdit, text=f"Nombre anterior {i[0]}")
+            labelEntryLastName.pack()
+            labelEntryName = Label(rootEdit, text=f"Digite el numero nombre:")
+            entryName = Entry(rootEdit)
+            btnAccept = Button(rootEdit, text="Aceptar", command= lambda: edit(optionsSpecify, name, entryName.get(), rootEdit))
+            btnClose = Button(rootEdit, text="Salir", command= lambda: close(rootEdit))
+            btnClose.pack
+            tittle.pack()
+            labelEntryName.pack()
+            entryName.pack()
+            btnAccept.pack()
+def changeState(optionsSpecify, name, rootClose, optionsChange):
+    for i in range(len(optionsSpecify)):
+        if(optionsSpecify[i][0] == name):
+            copyOptionsSpecify = optionsSpecify[i]
+            optionsSpecify.remove(copyOptionsSpecify)
+            copyOptionsSpecify[1] = False
+            optionsChange.append(copyOptionsSpecify)
+            break
+    close(rootClose)
+    menuAdmin()
+
+def edit(optionsSpecify,name, itemToChange, rootClose):
+    print(optionsSpecify)
+    for i in range(len(optionsSpecify)):
+        if(optionsSpecify[i][0] == name):
+            optionsSpecify[i][0] = itemToChange
+    close(rootClose)
+    menuAdmin()
+
+def deleteElement(optionsSpecify, itemToDelete, rootClose):
+    for i in optionsSpecify:
+        if(i[0] == itemToDelete):
+            optionsSpecify.remove(i)
+    close(rootClose)
+    menuAdmin()
+def showItems(optionsSpecify, root):
+    if(len(optionsSpecify) != 0):
+        for i in range(len(optionsSpecify)):
+            frame = Frame(root)
+            labaelName = Label(frame, text=optionsSpecify[i][0])
+            labaelName.pack()
+            frame.pack()
+    else: 
+        labelMessage = Label(root, text="No hay elementos")
+        labelMessage.pack()
+
+
+def menuSeeMore(optionsSpecify):
+    rootSeeMore = Tk()
+    tittle = Label(rootSeeMore, text="JETT")
+    tittle.pack()
+    frame = Frame(rootSeeMore)
+    frame.pack()
+    if(len(optionsSpecify) != 0):
+        for i in range(len(optionsSpecify)):
+            frameElemento = Frame(frame, bg="#D1DDFF", padx=10, pady=10)
+            labelNamePlane = Label(frameElemento, text=optionsSpecify[i][0])
+            labelStatePlane = Label(frameElemento)
+            if(optionsSpecify[i][1] == True):
+                labelStatePlane["text"] = "Activo"
+            else: labelStatePlane["text"] = "Ocupado"
+            labelDatePlane = Label(frameElemento, text=optionsSpecify[i][2])
+            labelPricePlane = Label(frameElemento, text="$"+str(optionsSpecify[i][3]))
+            frameElemento.pack()
+            labelNamePlane.pack()
+            labelStatePlane.pack()
+            labelDatePlane.pack()
+            labelPricePlane.pack()
+        else:
+            labelMessage = Label(frame, text="No hay elementos")
+            labelMessage.pack()
+    rootSeeMore.mainloop()
 
 def close(root):
     root.destroy()
 
 
-
-
-def menuUser(options):
+def menuUser():
     root = Tk()
     tittle = Label(root, text="JETT")
-
-def modify(optionsFpecific, number):
-    # optionsFpecific[number]
-    # optionsFpecific[0] = input("Nombre")
-    # optionsFpecific[1] = input("Nombre")
-    # optionsFpecific[2] = input("Nombre")
-    # optionsFpecific[3] = input("Nombre")+
-    pass
-
-
-def delete():
-    pass
-
 main()
