@@ -174,10 +174,18 @@ def menuAlert(message):
     messagebox.showwarning(message=message, title="Aviso")
 
 def addPlane(rootClose, optionsSpecify, newPlane):
+    exists = False
     if(len(optionsSpecify) != 5):
-        close(rootClose)
-        menuAdmin()
-        optionsSpecify.append(newPlane)
+        for i in optionsSpecify:
+            if(i[0].lower() == newPlane[0].lower()):
+                exists = True
+                break
+        if(exists):
+            menuAlert("Ya existe un avion con ese nombre")
+        else:
+            optionsSpecify.append(newPlane)
+            close(rootClose)
+            menuAdmin()
     else:
         menuAlert("No se puede agregar ese elemento debido a que se a llegado el limite de aviones")
 
@@ -221,7 +229,7 @@ def searchPlaneUser(optionsSpecify, searchedName, frame, rootClose):
             dateLabel.pack()
             priceLabel = Label(frame, text=f"Precio: ${i[3]}")
             priceLabel.pack()
-            btnRent = Button(frame, text="Alquilar", command=lambda: menuRentPlane(rootClose, optionsSpecify, options["planesBusy"], element))
+            btnRent = Button(frame, text="Alquilar", command=lambda: menuRent(rootClose, optionsSpecify, options["planesBusy"], element))
             btnRent.pack()
 
 def searchHangarAdmin(optionsSpecify, searchedName, frame, rootClose):
@@ -260,28 +268,10 @@ def searchHangarUser(optionsSpecify, searchedName, frame, rootClose):
             dateLabel.pack()
             priceLabel = Label(frame, text=f"Precio: ${i[3]}")
             priceLabel.pack()
-            btnRent = Button(frame, text="Alquilar", command=lambda: menuHangar(rootClose, optionsSpecify, options["hangarBusy"], element))
+            btnRent = Button(frame, text="Alquilar", command=lambda: menuRent(rootClose, optionsSpecify, options["hangarBusy"], element))
             btnRent.pack()
 
-def menuRentPlane(rootClose, optionsSpecify, optionsChange, element):
-    close(rootClose)
-    root = Tk()
-    labelName = Label(root, text="Nombre del arrentario")
-    labelName.pack()
-    entryName = Entry(root)
-    entryName.pack()
-    labelPrice = Label(root, text="Cedula del arrentario")
-    labelPrice.pack()
-    entryPrice = Entry(root)
-    entryPrice.pack()
-    
-    btnAcept = Button(root, text="Pagar", command= lambda : rent(root, optionsSpecify, optionsChange, element, entryName.get(), entryPrice.get()))
-    btnAcept.pack()
-    btnAtras = Button(root, text="Salir", command= lambda : close(root))
-    btnAtras.pack()
-    root.mainloop()
-
-def menuHangar(rootClose, optionsSpecify, optionsChange, element):
+def menuRent(rootClose, optionsSpecify, optionsChange, element):
     close(rootClose)
     root = Tk()
     labelName = Label(root, text="Nombre del arrentario")
@@ -378,7 +368,7 @@ def menuSeeMore(optionsSpecify):
             frameElemento = Frame(frame, bg="#D1DDFF", padx=10, pady=10)
             labelNamePlane = Label(frameElemento, text=optionsSpecify[i][0])
             labelStatePlane = Label(frameElemento)
-            if(optionsSpecify[i][1] == True):
+            if(optionsSpecify[i][1]):
                 labelStatePlane["text"] = "Activo"
             else: labelStatePlane["text"] = "Ocupado"
             labelDatePlane = Label(frameElemento, text=optionsSpecify[i][2])
